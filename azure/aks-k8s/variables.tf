@@ -1,5 +1,5 @@
-variable "client_id" {}
-variable "client_secret" {}
+variable "client_id" {default = "127374e2-fcf5-4ef2-af8e-bb368e17dd97"}
+variable "client_secret" {default = "669a4926-ae7e-4403-8208-fc629452506d"}
 
 variable "agent_count" {
     default = 1
@@ -26,7 +26,7 @@ variable location {
 }
 
 variable log_analytics_workspace_name {
-    default = "testLogAnalyticsWorkspaceName"
+    default = "EADLogAnalyticsWorkspaceNameDH"
 }
 
 # refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
