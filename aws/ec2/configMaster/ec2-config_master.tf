@@ -8,6 +8,9 @@ locals  {
   instance-userdata = <<EOF
   #! /bin/bash
   date >> provisionedAt.txt
+  sudo yum -y install git
+  git clone https://github.com/RedXIV2/terraform.git 
+  sudo bash terraform/scripts/setupBaseFiles.sh
   sudo yum-config-manager --enable epel > output.log 2>&1
   sleep 20
   sudo yum -y install ansible >output.log 2>&1
