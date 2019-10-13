@@ -48,7 +48,7 @@ resource "aws_instance" "web" {
 
   provisioner "remote-exec" {
       inline = [
-        "curl -X GET '${var.registrationAPI}?ipAddress=${aws_instance.web.private_ip}&cmTool=Ansible&testSuite=2'"
+        "curl -X GET '${var.registrationAPI}?ipAddress=${aws_instance.web.private_ip}&cmTool=Ansible&testSuite=1'"
       ]
   }
 
