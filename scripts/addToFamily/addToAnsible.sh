@@ -17,3 +17,5 @@ else
     echo [servers] >> /etc/ansible/hosts
     echo "$1" >> /etc/ansible/hosts
 fi
+
+sudo bash /terraform/scripts/runTests.sh $1 Ansible

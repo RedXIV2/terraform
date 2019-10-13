@@ -1,0 +1,58 @@
+---
+- hosts: servers
+  tasks:
+ 
+    - name: Create the test group
+      group: name=test
+      become: true
+ 
+    - name: Create test User1
+      user:
+        name: user1
+        shell: /bin/bash
+        group: test
+        append: yes
+        comment: "thesis user"
+        state: present
+      become: true
+ 
+    - name: Create test User2
+      user:
+        name: user2
+        shell: /bin/bash
+        group: test
+        append: yes
+        comment: "thesis user"
+        state: present
+      become: true
+ 
+    - name: Create test User3
+      user:
+        name: user3
+        shell: /bin/bash
+        group: test
+        append: yes
+        comment: "thesis user"
+        state: present
+      become: true
+ 
+    - name: Create test User4
+      user:
+        name: user4
+        shell: /bin/bash
+        group: test
+        append: yes
+        comment: "thesis user"
+        state: present
+      become: true
+ 
+    - name: Create test User5
+      user:
+        name: user5
+        shell: /bin/bash
+        group: test
+        append: yes
+        comment: "thesis user"
+        state: present
+      become: true
+ 
