@@ -8,6 +8,7 @@ locals  {
   instance-userdata = <<EOF
   #! /bin/bash
   date >> provisionedAt.txt
+  sudo yum -y install git
   EOF
   }
 
