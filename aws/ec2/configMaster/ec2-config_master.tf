@@ -53,7 +53,7 @@ resource "aws_instance" "web" {
   ami               = "${data.aws_ami.amazon_linux.id}"
   instance_type     = "t2.micro"
   key_name          = "awsthesis"
-  #role              = "configMaster"
+  iam_instance_profile  = "configMaster"
   
   tags = {
     Name = "ConfigMaster"
