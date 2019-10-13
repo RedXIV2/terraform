@@ -1,7 +1,3 @@
-variable "subscription_id" {default = "21f3fa11-32e9-4554-947b-16de1f6e1f77"}
-variable "client_id" {default = "4fa554dc-5d17-4b59-8bcc-563e3bf000b9"}
-variable "client_secret" {default = "ccbde9c8-cb53-48a6-908e-05f50e71a7b9"}
-variable "tenant_id" {default = "dae0c460-7400-471d-a9ea-14450cdf5433"}
 
 provider "azurerm" {
   tenant_id       = "${var.tenant_id}"
