@@ -15,6 +15,8 @@ locals  {
   sleep 20
   sudo yum -y install ansible >output.log 2>&1
   sudo sed -i '/callback_whitelist/c\callback_whitelist = profile_tasks' /etc/ansible/ansible.cfg
+  sudo sed -i '/host_key_checking/c\host_key_checking = False' /etc/ansible/ansible.cfg
+  sudo sed -i '/#remote_user/c\remote_user = ec2-user' /etc/ansible/ansible.cfg
   ls /tmp >> didKeyArrive.txt
   echo '# Check if the ssh-agent is already running' >> /home/ec2-user/.bashrc
   echo 'if [[ "$(ps -u $USER | grep ssh-agent | wc -l)" -lt "1" ]]; then' >> /home/ec2-user/.bashrc
