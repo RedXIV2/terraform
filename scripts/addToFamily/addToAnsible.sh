@@ -18,4 +18,5 @@ else
     echo "$1" >> /etc/ansible/hosts
 fi
 
+echo "running sudo bash /terraform/scripts/runTests.sh $1 Ansible"
 sudo bash /terraform/scripts/runTests.sh $1 Ansible
