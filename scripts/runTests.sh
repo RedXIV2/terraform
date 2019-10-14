@@ -13,9 +13,9 @@ fi
 
 echo "$(date) ***Running Test***" >> /myLogs.txt
 
-path_to_test=/terraform/tests/${2}/
-test_case_to_run=${1}
-full_test="$(ls ${path_to_test}${test_case_to_run}* )"
+path_to_test=/terraform/tests/$2/
+test_case_to_run=$1
+full_test="$(ls ${path_to_test}${test_case_to_run}*/* )"
 
 echo "$(date) Executing: ${full_test}" >> /myLogs.txt
 ansible-playbook ${full_test}/*.yml >> /myLogs.txt 2>&1
