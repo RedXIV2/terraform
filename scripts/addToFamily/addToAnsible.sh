@@ -18,5 +18,5 @@ else
     echo "$1" >> /etc/ansible/hosts
 fi
 
-echo "running sudo bash /terraform/scripts/runTests.sh $1 Ansible" >> /myLogs.txt
-sudo bash /terraform/scripts/runTests.sh $1 Ansible
+echo "$(date) running sudo bash /terraform/scripts/runTests.sh $2 Ansible" >> /myLogs.txt
+sudo bash /terraform/scripts/runTests.sh $2 Ansible
