@@ -51,7 +51,7 @@ count = 5
 
   provisioner "remote-exec" {
       inline = [
-        "curl -X --retry 5 GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Ansible&testSuite=1'"
+        "curl --retry 5 -X GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Ansible&testSuite=1'"
       ]
   }
 
