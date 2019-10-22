@@ -29,17 +29,20 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_instance" "web" {
+count = 5
+
   ami               = "${data.aws_ami.amazon_linux.id}"
   instance_type     = "t2.micro"
   key_name          = "awsthesis"
   user_data_base64  = "${base64encode(local.instance-userdata)}"
 
   tags = {
-    Name = "HelloWorld"
+    Name = "test-server-${count.index}"
   }
 
   connection {
-    host = "${aws_instance.web.public_ip}"
+    #host = "${aws_instance.web[count].public_ip}"
+    host = "${self.public_ip}"
     type = "ssh"
     user = "ec2-user"
     private_key = "${file("D:\\Tools\\Keys\\awsthesis.pem")}"
@@ -48,7 +51,7 @@ resource "aws_instance" "web" {
 
   provisioner "remote-exec" {
       inline = [
-        "curl -X GET '${var.registrationAPI}?ipAddress=${aws_instance.web.private_ip}&cmTool=Ansible&testSuite=1'"
+        "curl -X GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Ansible&testSuite=1'"
       ]
   }
 

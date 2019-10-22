@@ -19,4 +19,4 @@ else
 fi
 
 echo "$(date) running sudo bash /terraform/scripts/runTests.sh $2 Ansible" >> /myLogs.txt
-sudo bash /terraform/scripts/runTests.sh $2 Ansible
+sudo bash /terraform/scripts/runTests.sh $2 Ansible $1
