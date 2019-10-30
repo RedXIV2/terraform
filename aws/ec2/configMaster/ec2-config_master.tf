@@ -4,6 +4,7 @@ provider "aws" {
   region = "eu-west-1"
 }
 
+# used for Amazon Linux
 locals  {
   instance-userdata = <<EOF
   #! /bin/bash
@@ -36,6 +37,30 @@ locals  {
   EOF
   }
 
+# Used for Ubuntu
+locals {
+  instance-userdata2 = <<EOF
+  #! /bin/bash
+  date >> provisionedAt.txt
+  ls /tmp >> didKeyArrive.txt
+  echo '# Check if the ssh-agent is already running' >> /home/ec2-user/.bashrc
+  echo 'if [[ "$(ps -u $USER | grep ssh-agent | wc -l)" -lt "1" ]]; then' >> /home/ec2-user/.bashrc
+  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent will be started"' >> /home/ec2-user/.bashrc
+  echo '  # Start the ssh-agent and redirect the environment variables into a file' >> /home/ec2-user/.bashrc
+  echo '    ssh-agent -s >~/.ssh/ssh-agent' >> /home/ec2-user/.bashrc
+  echo '    # Load the environment variables from the file' >> /home/ec2-user/.bashrc
+  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ec2-user/.bashrc
+  echo '    # Add the default key to the ssh-agent' >> /home/ec2-user/.bashrc
+  echo '    chmod 400 /tmp/awsthesis.pem' >> /home/ec2-user/.bashrc
+  echo '    ssh-add /tmp/awsthesis.pem' >> /home/ec2-user/.bashrc
+  echo 'else' >> /home/ec2-user/.bashrc
+  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent already running"' >> /home/ec2-user/.bashrc
+  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ec2-user/.bashrc
+  echo 'fi' >> /home/ec2-user/.bashrc
+  EOF
+}
+
+
 data "aws_ami" "amazon_linux" {
   most_recent = true
 
@@ -52,9 +77,19 @@ data "aws_ami" "amazon_linux" {
   owners = ["amazon"] 
 }
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+  }
+owners = ["099720109477"]
+}
+
 resource "aws_instance" "web" {
-  ami               = "${data.aws_ami.amazon_linux.id}"
-  instance_type     = "t2.micro"
+  ami               = "${data.aws_ami.ubuntu.id}"
+  instance_type     =  "t2.medium" #"t2.micro"
   key_name          = "awsthesis"
   iam_instance_profile  = "configMaster"
   
@@ -65,7 +100,8 @@ resource "aws_instance" "web" {
   connection {
     host = "${aws_instance.web.public_ip}"
     type = "ssh"
-    user = "ec2-user"
+    #user = "ec2-user"
+    user = "ubuntu"
     private_key = "${file("D:\\Tools\\Keys\\awsthesis.pem")}"
     agent = false
   }
@@ -75,5 +111,5 @@ resource "aws_instance" "web" {
     destination = "/tmp/awsthesis.pem"
   }
 
-  user_data_base64  = "${base64encode(local.instance-userdata)}"
+  user_data_base64  = "${base64encode(local.instance-userdata2)}"
 }
