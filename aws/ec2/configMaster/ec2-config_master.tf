@@ -7,33 +7,31 @@ provider "aws" {
 # used for Amazon Linux
 locals  {
   instance-userdata = <<EOF
-  #! /bin/bash
+  #! /bin/bash -x
   date >> provisionedAt.txt
-  sudo yum -y install git
+  sudo apt-get update
   git clone https://github.com/RedXIV2/terraform.git 
   sudo bash terraform/scripts/setupBaseFiles.sh
-  sudo yum-config-manager --enable epel > output.log 2>&1
-  sleep 20
-  sudo yum -y install ansible >output.log 2>&1
+  sudo apt install -y ansible >output.log 2>&1
   sudo sed -i '/callback_whitelist/c\callback_whitelist = profile_tasks' /etc/ansible/ansible.cfg
   sudo sed -i '/host_key_checking/c\host_key_checking = False' /etc/ansible/ansible.cfg
   sudo sed -i '/#remote_user/c\remote_user = ec2-user' /etc/ansible/ansible.cfg
   sudo sed -i '/#private_key_file/c\private_key_file = /tmp/awsthesis.pem' /etc/ansible/ansible.cfg
   ls /tmp >> didKeyArrive.txt
-  echo '# Check if the ssh-agent is already running' >> /home/ec2-user/.bashrc
-  echo 'if [[ "$(ps -u $USER | grep ssh-agent | wc -l)" -lt "1" ]]; then' >> /home/ec2-user/.bashrc
-  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent will be started"' >> /home/ec2-user/.bashrc
-  echo '  # Start the ssh-agent and redirect the environment variables into a file' >> /home/ec2-user/.bashrc
-  echo '    ssh-agent -s >~/.ssh/ssh-agent' >> /home/ec2-user/.bashrc
-  echo '    # Load the environment variables from the file' >> /home/ec2-user/.bashrc
-  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ec2-user/.bashrc
-  echo '    # Add the default key to the ssh-agent' >> /home/ec2-user/.bashrc
-  echo '    chmod 400 /tmp/awsthesis.pem' >> /home/ec2-user/.bashrc
-  echo '    ssh-add /tmp/awsthesis.pem' >> /home/ec2-user/.bashrc
-  echo 'else' >> /home/ec2-user/.bashrc
-  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent already running"' >> /home/ec2-user/.bashrc
-  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ec2-user/.bashrc
-  echo 'fi' >> /home/ec2-user/.bashrc
+  echo '# Check if the ssh-agent is already running' >> /home/ubuntu/.bashrc
+  echo 'if [[ "$(ps -u $USER | grep ssh-agent | wc -l)" -lt "1" ]]; then' >> /home/ubuntu/.bashrc
+  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent will be started"' >> /home/ubuntu/.bashrc
+  echo '  # Start the ssh-agent and redirect the environment variables into a file' >> /home/ubuntu/.bashrc
+  echo '    ssh-agent -s >~/.ssh/ssh-agent' >> /home/ubuntu/.bashrc
+  echo '    # Load the environment variables from the file' >> /home/ubuntu/.bashrc
+  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ubuntu/.bashrc
+  echo '    # Add the default key to the ssh-agent' >> /home/ubuntu/.bashrc
+  echo '    chmod 400 /tmp/awsthesis.pem' >> /home/ubuntu/.bashrc
+  echo '    ssh-add /tmp/awsthesis.pem' >> /home/ubuntu/.bashrc
+  echo 'else' >> /home/ubuntu/.bashrc
+  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent already running"' >> /home/ubuntu/.bashrc
+  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ubuntu/.bashrc
+  echo 'fi' >> /home/ubuntu/.bashrc
   EOF
   }
 
@@ -43,20 +41,20 @@ locals {
   #! /bin/bash
   date >> provisionedAt.txt
   ls /tmp >> didKeyArrive.txt
-  echo '# Check if the ssh-agent is already running' >> /home/ec2-user/.bashrc
-  echo 'if [[ "$(ps -u $USER | grep ssh-agent | wc -l)" -lt "1" ]]; then' >> /home/ec2-user/.bashrc
-  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent will be started"' >> /home/ec2-user/.bashrc
-  echo '  # Start the ssh-agent and redirect the environment variables into a file' >> /home/ec2-user/.bashrc
-  echo '    ssh-agent -s >~/.ssh/ssh-agent' >> /home/ec2-user/.bashrc
-  echo '    # Load the environment variables from the file' >> /home/ec2-user/.bashrc
-  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ec2-user/.bashrc
-  echo '    # Add the default key to the ssh-agent' >> /home/ec2-user/.bashrc
-  echo '    chmod 400 /tmp/awsthesis.pem' >> /home/ec2-user/.bashrc
-  echo '    ssh-add /tmp/awsthesis.pem' >> /home/ec2-user/.bashrc
-  echo 'else' >> /home/ec2-user/.bashrc
-  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent already running"' >> /home/ec2-user/.bashrc
-  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ec2-user/.bashrc
-  echo 'fi' >> /home/ec2-user/.bashrc
+  echo '# Check if the ssh-agent is already running' >> /home/ubuntu/.bashrc
+  echo 'if [[ "$(ps -u $USER | grep ssh-agent | wc -l)" -lt "1" ]]; then' >> /home/ubuntu/.bashrc
+  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent will be started"' >> /home/ubuntu/.bashrc
+  echo '  # Start the ssh-agent and redirect the environment variables into a file' >> /home/ubuntu/.bashrc
+  echo '    ssh-agent -s >~/.ssh/ssh-agent' >> /home/ubuntu/.bashrc
+  echo '    # Load the environment variables from the file' >> /home/ubuntu/.bashrc
+  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ubuntu/.bashrc
+  echo '    # Add the default key to the ssh-agent' >> /home/ubuntu/.bashrc
+  echo '    chmod 400 /tmp/awsthesis.pem' >> /home/ubuntu/.bashrc
+  echo '    ssh-add /tmp/awsthesis.pem' >> /home/ubuntu/.bashrc
+  echo 'else' >> /home/ubuntu/.bashrc
+  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent already running"' >> /home/ubuntu/.bashrc
+  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ubuntu/.bashrc
+  echo 'fi' >> /home/ubuntu/.bashrc
   EOF
 }
 
@@ -111,5 +109,5 @@ resource "aws_instance" "web" {
     destination = "/tmp/awsthesis.pem"
   }
 
-  user_data_base64  = "${base64encode(local.instance-userdata2)}"
+  user_data_base64  = "${base64encode(local.instance-userdata)}"
 }
