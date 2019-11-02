@@ -1,0 +1,16 @@
+---
+- hosts: all
+  tasks:
+
+    - name: Clone My Repo
+      git:
+         repo: https://github.com/RedXIV2/terraform.git
+         dest: /tmp/repo
+      become: true
+
+    - name: Clone kubernetes Repo
+      git:
+         repo: https://github.com/kubernetes/kubernetes
+         dest: /tmp/repo2
+      become: true
+

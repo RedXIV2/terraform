@@ -7,31 +7,33 @@ provider "aws" {
 # used for Amazon Linux
 locals  {
   instance-userdata = <<EOF
-  #! /bin/bash -x
-  date >> provisionedAt.txt
-  sudo apt-get update
-  git clone https://github.com/RedXIV2/terraform.git 
-  sudo bash terraform/scripts/setupBaseFiles.sh
-  sudo apt install -y ansible >output.log 2>&1
-  sudo sed -i '/callback_whitelist/c\callback_whitelist = profile_tasks' /etc/ansible/ansible.cfg
-  sudo sed -i '/host_key_checking/c\host_key_checking = False' /etc/ansible/ansible.cfg
-  sudo sed -i '/#remote_user/c\remote_user = ec2-user' /etc/ansible/ansible.cfg
-  sudo sed -i '/#private_key_file/c\private_key_file = /tmp/awsthesis.pem' /etc/ansible/ansible.cfg
-  ls /tmp >> didKeyArrive.txt
-  echo '# Check if the ssh-agent is already running' >> /home/ubuntu/.bashrc
-  echo 'if [[ "$(ps -u $USER | grep ssh-agent | wc -l)" -lt "1" ]]; then' >> /home/ubuntu/.bashrc
-  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent will be started"' >> /home/ubuntu/.bashrc
-  echo '  # Start the ssh-agent and redirect the environment variables into a file' >> /home/ubuntu/.bashrc
-  echo '    ssh-agent -s >~/.ssh/ssh-agent' >> /home/ubuntu/.bashrc
-  echo '    # Load the environment variables from the file' >> /home/ubuntu/.bashrc
-  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ubuntu/.bashrc
-  echo '    # Add the default key to the ssh-agent' >> /home/ubuntu/.bashrc
-  echo '    chmod 400 /tmp/awsthesis.pem' >> /home/ubuntu/.bashrc
-  echo '    ssh-add /tmp/awsthesis.pem' >> /home/ubuntu/.bashrc
-  echo 'else' >> /home/ubuntu/.bashrc
-  echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent already running"' >> /home/ubuntu/.bashrc
-  echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ubuntu/.bashrc
-  echo 'fi' >> /home/ubuntu/.bashrc
+#! /bin/bash -x
+date >> /provisionedAt.txt
+sudo apt-get update
+sudo apt-get -y install awscli > /output.log 2>&1
+git clone https://github.com/RedXIV2/terraform.git
+sudo bash /terraform/scripts/setupBaseFiles.sh
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt install -y ansible >> /output.log 2>&1
+sudo sed -i '/callback_whitelist/c\callback_whitelist = profile_tasks' /etc/ansible/ansible.cfg
+sudo sed -i '/host_key_checking/c\host_key_checking = False' /etc/ansible/ansible.cfg
+sudo sed -i '/#remote_user/c\remote_user = ubuntu' /etc/ansible/ansible.cfg
+sudo sed -i '/#private_key_file/c\private_key_file = /tmp/awsthesis.pem' /etc/ansible/ansible.cfg
+ls /tmp >> /didKeyArrive.txt
+echo '# Check if the ssh-agent is already running' >> /home/ubuntu/.bashrc
+echo 'if [[ "$(ps -u $USER | grep ssh-agent | wc -l)" -lt "1" ]]; then' >> /home/ubuntu/.bashrc
+echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent will be started"' >> /home/ubuntu/.bashrc
+echo '  # Start the ssh-agent and redirect the environment variables into a file' >> /home/ubuntu/.bashrc
+echo '    ssh-agent -s >~/.ssh/ssh-agent' >> /home/ubuntu/.bashrc
+echo '    # Load the environment variables from the file' >> /home/ubuntu/.bashrc
+echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ubuntu/.bashrc
+echo '    # Add the default key to the ssh-agent' >> /home/ubuntu/.bashrc
+echo '    chmod 400 /tmp/awsthesis.pem' >> /home/ubuntu/.bashrc
+echo '    ssh-add /tmp/awsthesis.pem' >> /home/ubuntu/.bashrc
+echo 'else' >> /home/ubuntu/.bashrc
+echo '    #echo "$(date +%F@%T) - SSH-AGENT: Agent already running"' >> /home/ubuntu/.bashrc
+echo '    . ~/.ssh/ssh-agent >/dev/null' >> /home/ubuntu/.bashrc
+echo 'fi' >> /home/ubuntu/.bashrc
   EOF
   }
 
@@ -109,5 +111,6 @@ resource "aws_instance" "web" {
     destination = "/tmp/awsthesis.pem"
   }
 
-  user_data_base64  = "${base64encode(local.instance-userdata)}"
+  user_data = "${local.instance-userdata}"
+  #user_data_base64  = "${base64encode(local.instance-userdata)}"
 }

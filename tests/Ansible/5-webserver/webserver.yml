@@ -1,0 +1,31 @@
+---
+- hosts: all
+  tasks:
+
+    - name: Update all Ubuntu packages
+      apt:
+        upgrade: "dist"
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu'
+      become: true
+
+    - name: Install required Ubuntu packages
+      apt:
+        name: "{{ packages }}"
+        state: present
+      become: true
+
+    - name: enabled mod_rewrite
+      apache2_module: name=rewrite state=present
+      notify:
+        - restart apache2
+      become: true
+
+  handlers:
+    - name: restart apache2
+      service: name=apache2 state=restarted
+
+
+  vars:
+    packages:
+      - apache2
