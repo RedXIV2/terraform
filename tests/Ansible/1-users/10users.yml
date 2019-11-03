@@ -1,5 +1,5 @@
 ---
-- hosts: servers
+- hosts: all
   tasks:
  
     - name: Create the test group
