@@ -8,4 +8,6 @@ cp /terraform/scripts/addToFamily/addTo* /
 chmod 700 /addTo*
 echo "$(date) AddToFamily scripts copied and permissions set" >> myLogs.txt
 
-
+# change key permissions
+chmod 600 /tmp/awsthesis.pem
+echo "$(date) key permissions updated"
