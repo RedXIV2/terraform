@@ -22,3 +22,25 @@ sudo sed -i '/#remote_user/c\remote_user = ubuntu' /etc/ansible/ansible.cfg
 sudo sed -i '/#private_key_file/c\private_key_file = /tmp/awsthesis.pem' /etc/ansible/ansible.cfg
 fi
 
+if [ "$1" == "salt" ]
+then
+wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
+sudo touch /etc/apt/sources.list.d/saltstack.list
+sudo echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest xenial main" >> /etc/apt/sources.list.d/saltstack.list
+
+sudo apt-get install -y salt-master
+sudo apt-get install -y salt-minion
+sudo apt-get install -y salt-ssh
+sudo apt-get install -y salt-syndic
+sudo apt-get install -y salt-cloud
+sudo apt-get install -y salt-api
+
+sudo echo "auto_accept: True" >> /etc/salt/master
+sudo echo "file_roots: " >> /etc/salt/master
+sudo echo "  base: " >> /etc/salt/master
+sudo echo "    - /srv/salt " >> /etc/salt/master
+
+sudo service salt-master start
+
+sudo cp /terraform/tests/Salt/top.sls /srv/salt/
+fi
