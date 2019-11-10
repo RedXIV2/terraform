@@ -12,16 +12,19 @@ echo "$(date) AddToFamily scripts copied and permissions set" >> myLogs.txt
 chmod 600 /tmp/awsthesis.pem
 echo "$(date) key permissions updated"
 
+#set up config master server with Ansible
 if [ "$1" == "ansible" ]
 then
 sudo apt-add-repository --yes --update ppa:ansible/ansible
 sudo apt install -y ansible >> /output.log 2>&1
+
 sudo sed -i '/callback_whitelist/c\callback_whitelist = profile_tasks' /etc/ansible/ansible.cfg
 sudo sed -i '/host_key_checking/c\host_key_checking = False' /etc/ansible/ansible.cfg
 sudo sed -i '/#remote_user/c\remote_user = ubuntu' /etc/ansible/ansible.cfg
 sudo sed -i '/#private_key_file/c\private_key_file = /tmp/awsthesis.pem' /etc/ansible/ansible.cfg
 fi
 
+#set up config master server with Salt
 if [ "$1" == "salt" ]
 then
 wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
@@ -42,5 +45,6 @@ sudo echo "    - /srv/salt " >> /etc/salt/master
 
 sudo service salt-master start
 
+sudo mkdir /srv/salt
 sudo cp /terraform/tests/Salt/top.sls /srv/salt/
 fi
