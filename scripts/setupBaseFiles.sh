@@ -12,7 +12,7 @@ echo "$(date) AddToFamily scripts copied and permissions set" >> myLogs.txt
 chmod 600 /tmp/awsthesis.pem
 echo "$(date) key permissions updated"
 
-if [ "$s1" == "ansible" ]
+if [ "$1" == "ansible" ]
 then
 sudo apt-add-repository --yes --update ppa:ansible/ansible
 sudo apt install -y ansible >> /output.log 2>&1
