@@ -10,6 +10,11 @@ if [ -z "$2" ]
     exit 1
 fi
 
+if [ -z "$3" ]
+  then
+    echo "$(date) No IP address supplied" >> /myLogs-$3.txt
+    exit 1
+fi
 
 echo "$(date) ***Running Test***" >> /myLogs-$3.txt
 
@@ -18,7 +23,22 @@ test_case_to_run=$1
 full_test="$(ls ${path_to_test}${test_case_to_run}*/* )"
 
 echo "$(date) Executing: ${full_test}" >> /myLogs-$3.txt
+
+#Ansible specific test runner
+if [ "$2" == "Ansible" ]
+then
 sudo -u ubuntu ansible-playbook -i $3, ${full_test} >> /myLogs-$3.txt 2>&1
+fi
+
+#Salt specific test runner
+if [ "$2" == "Salt" ]
+then
+
+state_to_apply="$(echo ${full_test} | sed 's|.*/||' | sed 's/.\{4\}$//')"
+
+sudo salt-call state.sls ${state_to_apply} >> /myLogs-$3.txt 2>&1
+
+fi
 
 echo "$(date) ***Finished Test***" >> /myLogs-$3.txt
 

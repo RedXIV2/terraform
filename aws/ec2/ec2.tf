@@ -9,6 +9,7 @@ locals  {
 #! /bin/bash
 date >> provisionedAt.txt
 sudo apt install -y python
+git clone https://github.com/RedXIV2/terraform.git
 EOF
   }
 

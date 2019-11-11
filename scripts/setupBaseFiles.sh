@@ -47,4 +47,13 @@ sudo service salt-master start
 
 sudo mkdir /srv/salt
 sudo cp /terraform/tests/Salt/top.sls /srv/salt/
+
+sudo echo "while true; do" >> approveAll.sh
+sudo echo "  sudo salt-key -y -A" >> approveAll.sh
+sudo echo "  sleep 1;" >> approveAll.sh
+sudo echo "done" >> approveAll.sh
+
+chmod +x approveAll.sh
+bash approveAll.sh &
+
 fi
