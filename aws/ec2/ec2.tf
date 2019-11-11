@@ -63,7 +63,7 @@ count = 1
   provisioner "remote-exec" {
       inline = [
         "sudo apt install -y python",
-        "curl --retry 5 -X GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Ansible&testSuite=5'"
+        "curl --retry 5 -X GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Salt&testSuite=4'"
       ]
   }
 

@@ -4,19 +4,29 @@ if [ -z "$1" ]
     exit 1
 fi
 
-if grep -q "$1" /etc/ansible/hosts; then
-    echo "$(date) $1 already in file" >> /myLogs.txt
-    exit 0
-fi
+echo "$(date) installing AWSCLI" >> /myLogs.txt
+sudo apt update
+sudo apt install -y awscli
 
-if grep -q "\[servers\]" /etc/ansible/hosts; then
-    echo "$(date) found and added $1" >> /myLogs.txt
-    echo "$1" >> /etc/ansible/hosts
-else
-    echo "$(date) not found and added $1" >> /myLogs.txt
-    echo [servers] >> /etc/ansible/hosts
-    echo "$1" >> /etc/ansible/hosts
-fi
+echo "$(date) Searching for config master ..." >> /myLogs.txt
 
-echo "$(date) running sudo bash /terraform/scripts/runTests.sh $2 Ansible" >> /myLogs.txt
-sudo bash /terraform/scripts/runTests.sh $2 Ansible $1
+CONFIG_DNS=$(sudo aws ec2 describe-instances --filters 'Name=tag:Name,Values=ConfigMaster' \
+  'Name=instance-state-name,Values=running' --query 'Reservations[*].Instances[*].[PrivateDnsName]' \
+   --region eu-west-1 --output text)
+
+echo "$(date) Config DNS is ${CONFIG_DNS}" >> /myLogs.txt
+
+echo "$(date) Getting bootstrap script" >> /myLogs.txt
+sudo curl -o bootstrap-salt.sh -L https://bootstrap.saltstack.com
+
+echo "$(date) bootstrap needs to be executable" >> /myLogs.txt
+sudo chmod +x bootstrap-salt.sh
+
+echo "$(date) bootstrapping salt minion..." >> /myLogs.txt
+sudo sh bootstrap-salt.sh -A "${CONFIG_DNS}"
+
+echo "$(date) Bootstrapping complete" >> /myLogs.txt
+
+
+echo "$(date) running sudo bash /terraform/scripts/runTests.sh $2 Salt" >> /myLogs.txt
+sudo bash /terraform/scripts/runTests.sh $2 Salt $1
