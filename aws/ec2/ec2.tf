@@ -9,7 +9,6 @@ locals  {
 #! /bin/bash
 date >> provisionedAt.txt
 sudo apt install -y python
-git clone https://github.com/RedXIV2/terraform.git
 EOF
   }
 
@@ -46,6 +45,7 @@ count = 1
   instance_type     = "t2.micro"
   key_name          = "awsthesis"
   user_data_base64  = "${base64encode(local.instance-userdata)}"
+  iam_instance_profile  = "configMaster"
 
   tags = {
     Name = "test-server-${count.index}"
@@ -62,7 +62,9 @@ count = 1
 
   provisioner "remote-exec" {
       inline = [
-        "sudo apt install -y python",
+        "sudo git clone https://github.com/RedXIV2/terraform.git /terraform",
+        "sudo cp /terraform/scripts/addToFamily/addTo* /",
+        "sudo chmod 777 /addTo*",
         "curl --retry 5 -X GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Salt&testSuite=4'"
       ]
   }
