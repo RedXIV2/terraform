@@ -36,6 +36,12 @@ then
 
 state_to_apply="$(echo ${full_test} | sed 's|.*/||' | sed 's/.\{4\}$//')"
 
+until [ -x "$(command -v salt)" ]
+do
+  echo 'Error: salt is not installed.' >> /myLogs-$3.txt
+fi
+
+
 sudo salt-call state.sls ${state_to_apply} >> /myLogs-$3.txt 2>&1
 
 fi

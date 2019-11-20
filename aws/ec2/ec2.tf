@@ -8,6 +8,8 @@ locals  {
   instance-userdata = <<EOF
 #! /bin/bash
 date >> provisionedAt.txt
+sudp apt update
+sudo apt install -y awscli
 sudo apt install -y python
 EOF
   }

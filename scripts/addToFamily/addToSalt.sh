@@ -8,6 +8,14 @@ echo "$(date) installing AWSCLI" >> /myLogs.txt
 sudo apt update
 sudo apt install -y awscli
 
+echo "$(date) checking AWSCLI" >> /myLogs.txt
+until [ -x "$(command -v aws)" ]
+do
+  echo 'Error: aws is not installed.' >&2
+  sudo apt install -y awscli
+fi
+
+
 echo "$(date) Searching for config master ..." >> /myLogs.txt
 
 CONFIG_DNS=$(sudo aws ec2 describe-instances --filters 'Name=tag:Name,Values=ConfigMaster' \
