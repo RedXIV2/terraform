@@ -36,7 +36,7 @@ then
 
 state_to_apply="$(echo ${full_test} | sed 's|.*/||' | sed 's/.\{4\}$//')"
 
-until [ -x "$(command -v salt)" ]
+until [ -x "$(command -v salt-call)" ]
 do
   echo 'Error: salt is not installed.' >> /myLogs-$3.txt
 done
