@@ -13,7 +13,7 @@ until [ -x "$(command -v aws)" ]
 do
   echo 'Error: aws is not installed.' >&2
   sudo apt install -y awscli
-fi
+done
 
 
 echo "$(date) Searching for config master ..." >> /myLogs.txt
