@@ -29,4 +29,5 @@ echo "$(date) Bootstrapping complete" >> /myLogs.txt
 
 
 echo "$(date) running sudo bash /terraform/scripts/runTests.sh $2 Salt" >> /myLogs.txt
-sudo bash /terraform/scripts/runTests.sh $2 Salt $1 &
+nohup sudo bash /terraform/scripts/runTests.sh $2 Salt $1 &
+disown
