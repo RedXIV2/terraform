@@ -53,7 +53,7 @@ HOST_ENTRY="$PRIVATE_IP puppet-master $CONFIG_DNS $PUBLIC_DNS puppet-master.eu-w
 echo "$(date) Adding $HOST_ENTRY to hosts file" c
 sudo echo $HOST_ENTRY >> /etc/hosts
 
-sudo apt install puppet -y
+sudo apt install puppet -y >> /etc/myLogs.txt
 
 echo "$(date) Updating puppet.conf" >> /myLogs.txt
 sudo sed -i '/postrun_command=\/etc\/puppet\/etckeeper-commit-post/a server = puppet-master.eu-west-1.compute.internal' /etc/puppet/puppet.conf
