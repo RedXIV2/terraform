@@ -49,7 +49,8 @@ fi
 if [ "$2" == "Puppet" ]
 then
 
-sudo cp ${full_test} /etc/puppet/manifest/
+echo "$(date) copying ${full_test} to /etc/puppet/manifest" >> /myLogs-$3.txt
+sudo cp ${full_test} /etc/puppet/manifests/
 
 
 fi

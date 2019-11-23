@@ -77,6 +77,7 @@ sudo puppet module install puppetlabs-git --version 0.5.0
 #needed for apache test
 sudo puppet module install example42-apache --version 2.1.13
 
+sudo mkdir -p /etc/puppet/modules/myuser/manifests/
 sudo cp /terraform/tests/Puppet/init.pp /etc/puppet/modules/myuser/manifests/
 
 
