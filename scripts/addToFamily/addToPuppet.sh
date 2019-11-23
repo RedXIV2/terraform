@@ -33,7 +33,7 @@ NODE_ID="$(sudo aws ec2 describe-instances --filters "Name=private-ip-address,Va
   'Name=instance-state-name,Values=running' --query 'Reservations[*].Instances[*].Tags[*].Value' \
    --region eu-west-1 --output text)"
 
-NODE_ID_NUMBER=$(NODE_ID: -1)
+NODE_ID_NUMBER=$(echo ${NODE_ID: -1} )
 
 echo "$(date) Node Identifier is ${NODE_ID_NUMBER}" >> /myLogs.txt
 
