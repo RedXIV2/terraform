@@ -17,19 +17,19 @@ done
 
 echo "$(date) Searching for client details ..." >> /myLogs.txt
 
-CONFIG_DNS="$(sudo aws ec2 describe-instances --filters 'Name=private-ip-address,Values=$1' \
+CONFIG_DNS="$(sudo aws ec2 describe-instances --filters "Name=private-ip-address,Values=$1" \
   'Name=instance-state-name,Values=running' --query 'Reservations[*].Instances[*].[PrivateDnsName]' \
    --region eu-west-1 --output text)"
 
 echo "$(date) Private DNS is ${CONFIG_DNS}" >> /myLogs.txt
 
-PUBLIC_DNS="$(sudo aws ec2 describe-instances --filters 'Name=private-ip-address,Values=$1' \
+PUBLIC_DNS="$(sudo aws ec2 describe-instances --filters "Name=private-ip-address,Values=$1" \
   'Name=instance-state-name,Values=running' --query 'Reservations[*].Instances[*].[PublicDnsName]' \
    --region eu-west-1 --output text)"
 
 echo "$(date) Public DNS is ${PUBLIC_DNS}" >> /myLogs.txt
 
-NODE_ID="$(sudo aws ec2 describe-instances --filters 'Name=private-ip-address,Values=$1' \
+NODE_ID="$(sudo aws ec2 describe-instances --filters "Name=private-ip-address,Values=$1" \
   'Name=instance-state-name,Values=running' --query 'Reservations[*].Instances[*].Tags[*].Value' \
    --region eu-west-1 --output text)"
 
