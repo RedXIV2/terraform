@@ -41,10 +41,19 @@ do
   echo 'Error: salt is not installed.' >> /myLogs-$3.txt
 done
 
-
 sudo salt-call state.sls ${state_to_apply} >> /myLogs-$3.txt 2>&1
 
 fi
+
+#Puppet specific test runner
+if [ "$2" == "Puppet" ]
+then
+
+sudo cp ${full_test} /etc/puppet/manifest/
+
+
+fi
+
 
 echo "$(date) ***Finished Test***" >> /myLogs-$3.txt
 

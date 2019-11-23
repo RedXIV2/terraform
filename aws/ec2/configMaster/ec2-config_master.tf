@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 variable "configTool" {
-  default = "salt"  
+  default = "puppet"  
 }
 
 
