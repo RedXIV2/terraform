@@ -58,3 +58,26 @@ chmod +x approveAll.sh
 bash approveAll.sh &
 
 fi
+
+#set up config master server with Puppet
+if [ "$1" == "puppet" ]
+then
+
+sudo hostnamectl set-hostname puppet-master
+sudo apt update -y
+sudo apt upgrade -y
+
+sudo apt install puppetmaster -y
+sudo echo "autosign=true" >> /etc/puppet/puppet.conf
+
+#needed for JDK test
+sudo puppet module install example42-java --version 2.1.2
+#needed for git test
+sudo puppet module install puppetlabs-git --version 0.5.0
+#needed for apache test
+sudo puppet module install example42-apache --version 2.1.13
+
+sudo cp /terraform/tests/Puppet/init.pp /etc/puppet/modules/myuser/manifests/
+
+
+fi
