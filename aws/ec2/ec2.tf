@@ -67,7 +67,7 @@ count = 1
         "sudo git clone https://github.com/RedXIV2/terraform.git /terraform",
         "sudo cp /terraform/scripts/addToFamily/addTo* /",
         "sudo chmod 777 /addTo*",
-        "curl --retry 5 -m 120 -X GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Salt&testSuite=4'"
+        "curl --retry 5 -m 120 -X GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Puppet&testSuite=4'"
       ]
   }
 

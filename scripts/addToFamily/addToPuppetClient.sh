@@ -43,7 +43,7 @@ PUBLIC_DNS=$(sudo aws ec2 describe-instances --filters 'Name=tag:Name,Values=Con
 echo "$(date) Config DNS is ${PUBLIC_DNS}" >> /myLogs.txt
 
 PRIVATE_IP=$(sudo aws ec2 describe-instances --filters 'Name=tag:Name,Values=ConfigMaster' \
-  'Name=instance-state-name,Values=running' --query 'Reservations[*].Instances[*].[private-ip-address]' \
+  'Name=instance-state-name,Values=running' --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
    --region eu-west-1 --output text)
 
 echo "$(date) Private IP is ${PRIVATE_IP}" >> /myLogs.txt
