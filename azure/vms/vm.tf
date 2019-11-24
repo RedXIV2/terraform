@@ -12,6 +12,7 @@ data "azurerm_resource_group" "resource_group" {
 
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
+    count = 1
     name                = "myVnet"
     address_space       = ["10.0.0.0/16"]
     location            = "northeurope"
@@ -24,14 +25,16 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
 
 # Create subnet
 resource "azurerm_subnet" "myterraformsubnet" {
+    count = 1
     name                 = "mySubnet"
     resource_group_name  = "${data.azurerm_resource_group.resource_group.name}"
-    virtual_network_name = "${azurerm_virtual_network.myterraformnetwork.name}"
+    virtual_network_name = "${azurerm_virtual_network.myterraformnetwork[count.index].name}"
     address_prefix       = "10.0.1.0/24"
 }
 
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
+count = 1
     name                         = "myPublicIP"
     location                     = "northeurope"
     resource_group_name          = "${data.azurerm_resource_group.resource_group.name}"
@@ -45,6 +48,7 @@ resource "azurerm_public_ip" "myterraformpublicip" {
 
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "myterraformnsg" {
+    count = 1
     name                = "myNetworkSecurityGroup"
     location            = "northeurope"
     resource_group_name = "${data.azurerm_resource_group.resource_group.name}"
@@ -68,16 +72,17 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
+    count = 1
     name                      = "myNIC"
     location                  = "northeurope"
     resource_group_name       = "${data.azurerm_resource_group.resource_group.name}"
-    network_security_group_id = "${azurerm_network_security_group.myterraformnsg.id}"
+    network_security_group_id = "${azurerm_network_security_group.myterraformnsg[count.index].id}"
 
     ip_configuration {
         name                          = "myNicConfiguration"
-        subnet_id                     = "${azurerm_subnet.myterraformsubnet.id}"
+        subnet_id                     = "${azurerm_subnet.myterraformsubnet[count.index].id}"
         private_ip_address_allocation = "Dynamic"
-        public_ip_address_id          = "${azurerm_public_ip.myterraformpublicip.id}"
+        public_ip_address_id          = "${azurerm_public_ip.myterraformpublicip[count.index].id}"
     }
 
     tags = {
@@ -87,6 +92,7 @@ resource "azurerm_network_interface" "myterraformnic" {
 
 # Generate random text for a unique storage account name
 resource "random_id" "randomId" {
+    count = 1
     keepers = {
         # Generate a new ID only when a new resource group is defined
         resource_group = "${data.azurerm_resource_group.resource_group.name}"
@@ -97,7 +103,8 @@ resource "random_id" "randomId" {
 
 # Create storage account for boot diagnostics
 resource "azurerm_storage_account" "mystorageaccount" {
-    name                        = "diag${random_id.randomId.hex}"
+    count = 1
+    name                        = "diag${random_id.randomId[count.index].hex}"
     resource_group_name         = "${data.azurerm_resource_group.resource_group.name}"
     location                    = "northeurope"
     account_tier                = "Standard"
@@ -110,10 +117,12 @@ resource "azurerm_storage_account" "mystorageaccount" {
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "myterraformvm" {
-    name                          = "myVM"
+count = 1
+
+    name                          = "myVM-${count.index}"
     location                      = "northeurope"
     resource_group_name           = "${data.azurerm_resource_group.resource_group.name}"
-    network_interface_ids         = ["${azurerm_network_interface.myterraformnic.id}"]
+    network_interface_ids         = ["${azurerm_network_interface.myterraformnic[count.index].id}"]
     vm_size                       = "Standard_DS1_v2"
     delete_os_disk_on_termination = "true"
 
@@ -133,20 +142,20 @@ resource "azurerm_virtual_machine" "myterraformvm" {
 
     os_profile {
         computer_name  = "myvm"
-        admin_username = "azureuser"
+        admin_username = "ubuntu"
     }
 
     os_profile_linux_config {
         disable_password_authentication = true
         ssh_keys {
-            path     = "/home/azureuser/.ssh/authorized_keys"
+            path     = "/home/ubuntu/.ssh/authorized_keys"
             key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAgXBfFArZjcOiDZy25jG/f0By3NgDZAWBdBSZUtXGIARrWHahCGVe8au1rJj5acADmphucTkqXKZq+s6PGGjOSs1V/wXtcVaO/ZdWq8x56qSRBGhoKh879OHKFybsO9R/PfYncOWNeV6Gz+qxGwfHE0CJtvNM7fFQxAQZiAMR8zIwlYH2gdsakpQjJlppYGmeAr+0zgQNfwWwxRqdRUpQEddknbgw3UI8FHxQIXztpyDTk7ySx4KqQVX2q8bZp8xXnm+Dgnm/TZHtMGOHdXxgX314o9UzfSPJkwZcu+Xynr5vRBPyyBOB7cbYfv5CHC9wki75IWa/CVVvuVUIGE+opw=="
         }
     }
 
     boot_diagnostics {
         enabled = "true"
-        storage_uri = "${azurerm_storage_account.mystorageaccount.primary_blob_endpoint}"
+        storage_uri = "${azurerm_storage_account.mystorageaccount[count.index].primary_blob_endpoint}"
     }
 
     tags = {
@@ -156,7 +165,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     connection {
       host        = "thesisnode.northeurope.cloudapp.azure.com"
       type        = "ssh"
-      user        = "azureuser"
+      user        = "ubuntu"
       private_key = "${file("D:\\Tools\\Keys\\azureThesis.pem")}"
       timeout     = "1m"
     }
@@ -164,9 +173,23 @@ resource "azurerm_virtual_machine" "myterraformvm" {
 
     provisioner "remote-exec" {
 
-      inline = ["date >> provisionedAt.txt",
+      inline = [
+          "date >> provisionedAt.txt",
+          "curl --retry 5 -m 120 -X GET '${var.registrationAPI}?ipAddress=${IPAddress.value}&cmTool=Ansible&testSuite=4'"
     ]
   }
 
+
 }
 
+data "azurerm_public_ip" "myterraformpublicip" {
+count = 1
+  name                = "${azurerm_public_ip.myterraformpublicip[count.index].name}"
+  resource_group_name = "${azurerm_virtual_machine.myterraformvm[count.index].resource_group_name}"
+}
+
+#"curl --retry 5 -m 120 -X GET '${var.registrationAPI}?ipAddress=${azurerm_public_ip.myterraformpublicip[count.index].ip_address}&cmTool=Ansible&testSuite=4'"
+
+output "IPAddress" {
+  value = "${data.azurerm_public_ip.myterraformpublicip.*.ip_address}"
+}

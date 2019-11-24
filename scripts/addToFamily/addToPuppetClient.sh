@@ -58,7 +58,14 @@ sudo apt install puppet -y >> /etc/myLogs.txt
 echo "$(date) Updating puppet.conf" >> /myLogs.txt
 sudo sed -i '/postrun_command=\/etc\/puppet\/etckeeper-commit-post/a server = puppet-master.eu-west-1.compute.internal' /etc/puppet/puppet.conf
 
-sudo puppet agent --no-daemonize --onetime --verbose >> /myLogs.txt
-sudo puppet agent --enable >> /myLogs.txt
-sudo puppet agent --server puppet-master.eu-west-1.compute.internal >> /myLogs.txt
-sudo puppet agent --test >> /myLogs.txt
+sudo puppet agent --no-daemonize --onetime --verbose >> /myLogs-$3.txt
+sudo puppet agent --enable >> /myLogs-$3.txt
+sudo puppet agent --server puppet-master.eu-west-1.compute.internal >> /myLogs-$3.txt
+sudo puppet agent --test >> /myLogs-$3.txt
+
+
+echo "$(date) Executing: aws s3 mv /myLogs-$3.txt s3://dhill-config-management-tests/debug/${2}/myLogs-$(date).txt >> awsCopy.log 2>&1" >> /myLogs-$3.txt
+
+aws s3 mv /myLogs-$3.txt s3://dhill-config-management-tests/debug/"${2}"/myLogs-$3-"$(date)".txt >> awsCopy.log 2>&1
+
+echo "$(date) ***Finished Upload***" >> /myLogs.txt
