@@ -174,8 +174,12 @@ count = 1
     provisioner "remote-exec" {
 
       inline = [
+          "sleep 20",
           "date >> provisionedAt.txt",
-          "curl --retry 5 -m 120 -X GET '${var.registrationAPI}?ipAddress=${IPAddress.value}&cmTool=Ansible&testSuite=4'"
+          "sudo echo ${var.key_data} >> /home/ubuntu/.ssh/authorized_keys",
+          "export myIP=$(curl -H Metadata:true \"http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/publicIpAddress?api-version=2017-04-02&format=text\")",
+          #"curl --retry 5 -m 120 -X GET '${var.registrationAPI}?ipAddress=${IPAddress.value}&cmTool=Ansible&testSuite=4'"
+          "curl --retry 5 -m 120 -X GET \"${var.registrationAPI}?ipAddress=$myIP&cmTool=Ansible&testSuite=4\""
     ]
   }
 

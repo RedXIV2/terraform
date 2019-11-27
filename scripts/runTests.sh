@@ -16,6 +16,8 @@ if [ -z "$3" ]
     exit 1
 fi
 
+cat /provisionedAt.txt >> /myLogs-$3.txt
+
 echo "$(date) ***Running Test***" >> /myLogs-$3.txt
 
 path_to_test=/terraform/tests/$2/
