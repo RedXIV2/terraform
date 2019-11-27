@@ -66,6 +66,6 @@ sudo puppet agent --test >> /myLogs-$3.txt
 
 echo "$(date) Executing: aws s3 mv /myLogs-$3.txt s3://dhill-config-management-tests/debug/${2}/myLogs-$(date).txt >> awsCopy.log 2>&1" >> /myLogs-$3.txt
 
-aws s3 mv /myLogs-$3.txt s3://dhill-config-management-tests/debug/"${2}"/myLogs-$3-"$(date)".txt >> awsCopy.log 2>&1
+aws s3 mv /myLogs-$3.txt s3://dhill-config-management-tests/debug/"${2}"/puppet-client-myLogs-$3-"$(date)".txt >> awsCopy.log 2>&1
 
 echo "$(date) ***Finished Upload***" >> /myLogs.txt
