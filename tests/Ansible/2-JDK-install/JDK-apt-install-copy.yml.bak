@@ -2,6 +2,13 @@
 - hosts: all
   tasks:
 
+    - name: Update all Ubuntu packages
+      apt:
+        upgrade: "full"
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu'
+      become: true
+
     - name: Install required Ubuntu packages
       apt:
         name: "{{ packages }}"
