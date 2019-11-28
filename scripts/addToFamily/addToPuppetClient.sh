@@ -61,6 +61,8 @@ sudo sed -i '/postrun_command=\/etc\/puppet\/etckeeper-commit-post/a server = pu
 sudo puppet agent --no-daemonize --onetime --verbose >> /myLogs-$1.txt
 sudo puppet agent --enable >> /myLogs-$1.txt
 sudo puppet agent --server puppet-master.eu-west-1.compute.internal >> /myLogs-$1.txt
+
+echo "$(date) Applying Puppet State" >> /myLogs-$1.txt
 sudo puppet agent --test >> /myLogs-$1.txt
 
 
