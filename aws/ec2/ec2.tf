@@ -8,7 +8,13 @@ locals  {
   instance-userdata = <<EOF
 #! /bin/bash
 date >> provisionedAt.txt
-sudp apt update
+EOF
+  }
+
+locals  {
+  instance-userdata2 = <<EOF
+#! /bin/bash
+date >> provisionedAt.txt
 sudo apt install -y awscli
 sudo apt install -y python
 EOF
@@ -64,6 +70,7 @@ count = 10
 
   provisioner "remote-exec" {
       inline = [
+        "sudp apt-get update",
         "sudo git clone https://github.com/RedXIV2/terraform.git /terraform",
         "sudo cp /terraform/scripts/addToFamily/addTo* /",
         "sudo chmod 777 /addTo*",
