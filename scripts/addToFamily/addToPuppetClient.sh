@@ -50,10 +50,13 @@ echo "$(date) Private IP is ${PRIVATE_IP}" >> /myLogs.txt
 
 HOST_ENTRY="$PRIVATE_IP puppet-master $CONFIG_DNS $PUBLIC_DNS puppet-master.eu-west-1.compute.internal" 
 
-echo "$(date) Adding $HOST_ENTRY to hosts file" c
+echo "$(date) Adding $HOST_ENTRY to hosts file" 
 sudo echo $HOST_ENTRY >> /etc/hosts
 
-sudo apt install puppet -y >> /etc/myLogs.txt
+until [ -x "$(command -v puppet)" ]
+do
+  sudo apt install puppet -y >> /myLogs.txt
+done
 
 echo "$(date) Updating puppet.conf" >> /myLogs.txt
 sudo sed -i '/postrun_command=\/etc\/puppet\/etckeeper-commit-post/a server = puppet-master.eu-west-1.compute.internal' /etc/puppet/puppet.conf
