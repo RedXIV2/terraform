@@ -16,6 +16,7 @@ echo "$(date) checking AWSCLI" >> /myLogs.txt
 until [ -x "$(command -v aws)" ]
 do
   echo 'Error: aws is not installed.' >&2
+  sudo apt-get update
   sudo apt install -y awscli
 done
 
