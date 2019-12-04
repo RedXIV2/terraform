@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 variable "configTool" {
-  default = "salt"   # salt, puppet, ansible 
+  default = "puppet"   # salt, puppet, ansible 
 }
 
 
@@ -119,11 +119,33 @@ data "aws_ami" "ubuntu" {
 owners = ["099720109477"]
 }
 
+resource "aws_security_group" "ingress-all-test" {
+name = "allow-all-sg"
+
+ingress {
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+from_port = 0
+    to_port = 0
+    protocol = "-1"
+  
+  }  
+// Terraform removes the default rule
+  egress {
+   from_port = 0
+   to_port = 0
+   protocol = "-1"
+   cidr_blocks = ["0.0.0.0/0"]
+ }
+
+}
 resource "aws_instance" "web" {
   ami               = "${data.aws_ami.ubuntu.id}"
   instance_type     =  "t2.medium" #"t2.micro"
   key_name          = "awsthesis"
   iam_instance_profile  = "configMaster"
+  security_groups = ["${aws_security_group.ingress-all-test.name}"]
   
   tags = {
     Name = "ConfigMaster"

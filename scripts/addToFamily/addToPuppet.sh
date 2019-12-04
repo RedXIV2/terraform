@@ -36,11 +36,17 @@ NODE_ID="$(sudo aws ec2 describe-instances --filters "Name=private-ip-address,Va
 NODE_ID_NUMBER=$(echo ${NODE_ID: -1} )
 
 echo "$(date) Node Identifier is ${NODE_ID_NUMBER}" >> /myLogs.txt
+if [ -z "$3" ]
+  then
+  HOST_ENTRY="$1 puppet-agent-$NODE_ID_NUMBER $CONFIG_DNS $PUBLIC_DNS puppet-agent-$NODE_ID_NUMBER.eu-west-1.compute.internal" 
 
-HOST_ENTRY="$1 puppet-agent-$NODE_ID_NUMBER $CONFIG_DNS $PUBLIC_DNS puppet-agent-$NODE_ID_NUMBER.eu-west-1.compute.internal" 
-
-echo "$(date) Adding $HOST_ENTRY to hosts file" >> /myLogs.txt
-sudo echo $HOST_ENTRY >> /etc/hosts
+  echo "$(date) Adding $HOST_ENTRY to hosts file" >> /myLogs.txt
+  sudo echo $HOST_ENTRY >> /etc/hosts
+  else
+  HOST_ENTRY="$1 thesisnode.northeurope.cloudapp.azure.com"
+  echo "$(date) Adding $HOST_ENTRY to hosts file" >> /myLogs.txt
+  sudo echo $HOST_ENTRY >> /etc/hosts
+fi
 
 sudo service puppetmaster restart
 
