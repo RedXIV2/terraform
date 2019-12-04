@@ -38,9 +38,9 @@ sudo chmod +x bootstrap-salt.sh
 echo "$(date) bootstrapping salt minion..." >> /myLogs.txt
 if [ -z "$3" ]
   then
-    sudo sh bootstrap-salt.sh -A "${PUBLIC_CONFIG_DNS}"
-  else
     sudo sh bootstrap-salt.sh -A "${CONFIG_DNS}"
+  else
+    sudo sh bootstrap-salt.sh -A "${PUBLIC_CONFIG_DNS}"
 fi
 
 echo "$(date) Bootstrapping complete" >> /myLogs.txt
