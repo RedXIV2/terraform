@@ -47,7 +47,7 @@ owners = ["099720109477"]
 }
 
 resource "aws_instance" "web" {
-count = 10
+count = 3
 
   ami               = "${data.aws_ami.ubuntu.id}"
   instance_type     = "t2.micro"
@@ -74,7 +74,7 @@ count = 10
         "sudo git clone https://github.com/RedXIV2/terraform.git /terraform",
         "sudo cp /terraform/scripts/addToFamily/addTo* /",
         "sudo chmod 777 /addTo*",
-        "curl --retry 5 -m 120 -X GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Puppet&testSuite=2'"
+        "curl --retry 5 -m 120 -X GET '${var.registrationAPI}?ipAddress=${self.private_ip}&cmTool=Salt&testSuite=2&platform=aws'"
       ]
   }
 

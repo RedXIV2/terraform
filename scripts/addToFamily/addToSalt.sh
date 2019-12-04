@@ -22,7 +22,12 @@ CONFIG_DNS=$(sudo aws ec2 describe-instances --filters 'Name=tag:Name,Values=Con
   'Name=instance-state-name,Values=running' --query 'Reservations[*].Instances[*].[PrivateDnsName]' \
    --region eu-west-1 --output text)
 
+PUBLIC_CONFIG_DNS=$(sudo aws ec2 describe-instances --filters 'Name=tag:Name,Values=ConfigMaster' \
+  'Name=instance-state-name,Values=running' --query 'Reservations[*].Instances[*].[PublicDnsName]' \
+   --region eu-west-1 --output text)
+
 echo "$(date) Config DNS is ${CONFIG_DNS}" >> /myLogs.txt
+echo "$(date) Config DNS is ${PUBLIC_CONFIG_DNS}" >> /myLogs.txt
 
 echo "$(date) Getting bootstrap script" >> /myLogs.txt
 sudo curl -o bootstrap-salt.sh -L https://bootstrap.saltstack.com
@@ -31,7 +36,12 @@ echo "$(date) bootstrap needs to be executable" >> /myLogs.txt
 sudo chmod +x bootstrap-salt.sh
 
 echo "$(date) bootstrapping salt minion..." >> /myLogs.txt
-sudo sh bootstrap-salt.sh -A "${CONFIG_DNS}"
+if [ -z "$3" ]
+  then
+    sudo sh bootstrap-salt.sh -A "${PUBLIC_CONFIG_DNS}"
+  else
+    sudo sh bootstrap-salt.sh -A "${CONFIG_DNS}"
+fi
 
 echo "$(date) Bootstrapping complete" >> /myLogs.txt
 

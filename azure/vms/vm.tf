@@ -176,10 +176,24 @@ count = 1
       inline = [
           "sleep 20",
           "date >> provisionedAt.txt",
+          "sudo mkdir /home/ubuntu/.aws",
+          "sudo echo [default] >> /home/ubuntu/credentials",
+          "sudo echo aws_access_key_id = ${var.aws_access_id} >> /home/ubuntu/credentials",
+          "sudo echo aws_secret_access_key =${var.aws_secret_id} >> /home/ubuntu/credentials",
+          "sudo echo [default] >> /home/ubuntu/config",
+          "sudo echo output = json >> /home/ubuntu/config",
+          "sudo echo region = eu-west-1 >> /home/ubuntu/config",
+          "sudo cp /home/ubuntu/credentials /home/ubuntu/.aws/",
+          "sudo cp /home/ubuntu/config /home/ubuntu/.aws/",
+          "sudo git clone https://github.com/RedXIV2/terraform.git /terraform",
+          "sudo cp /terraform/scripts/addToFamily/addTo* /",
+          "sudo chmod 777 /addTo*",
           "sudo echo ${var.key_data} >> /home/ubuntu/.ssh/authorized_keys",
           "export myIP=$(curl -H Metadata:true \"http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/publicIpAddress?api-version=2017-04-02&format=text\")",
           #"curl --retry 5 -m 120 -X GET '${var.registrationAPI}?ipAddress=${IPAddress.value}&cmTool=Ansible&testSuite=4'"
-          "curl --retry 5 -m 120 -X GET \"${var.registrationAPI}?ipAddress=$myIP&cmTool=Ansible&testSuite=4\""
+          "curl --retry 5 -m 120 -X GET \"${var.registrationAPI}?ipAddress=$myIP&cmTool=Salt&testSuite=1&platform=azure\""
+          
+
     ]
   }
 
