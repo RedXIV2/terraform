@@ -55,9 +55,9 @@ echo "$(date) Private IP is ${PRIVATE_IP}" >> /myLogs.txt
 
 if [ -z "$3" ]
   then
-  HOST_ENTRY="$PRIVATE_IP puppet-master $CONFIG_DNS $PUBLIC_DNS puppet-master.eu-west-1.compute.internal" 
-  else
   HOST_ENTRY="$PUBLIC_IP puppet-master"
+  else
+  HOST_ENTRY="$PRIVATE_IP puppet-master $CONFIG_DNS $PUBLIC_DNS puppet-master.eu-west-1.compute.internal"
 fi
 
 echo "$(date) Adding $HOST_ENTRY to hosts file" 
