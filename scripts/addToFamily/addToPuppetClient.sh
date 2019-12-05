@@ -55,9 +55,9 @@ echo "$(date) Private IP is ${PRIVATE_IP}" >> /myLogs.txt
 
 if [ -z "$3" ]
   then
-  HOST_ENTRY="$PUBLIC_IP puppet-master"
-  else
   HOST_ENTRY="$PRIVATE_IP puppet-master $CONFIG_DNS $PUBLIC_DNS puppet-master.eu-west-1.compute.internal"
+  else
+  HOST_ENTRY="$PUBLIC_IP puppet-master"
 fi
 
 echo "$(date) Adding $HOST_ENTRY to hosts file" 
@@ -71,9 +71,9 @@ done
 echo "$(date) Updating puppet.conf" >> /myLogs.txt
 if [ -z "$3" ]
   then
-  sudo sed -i "/postrun_command=\/etc\/puppet\/etckeeper-commit-post/a server = $PUBLIC_IP" /etc/puppet/puppet.conf
-  else
   sudo sed -i '/postrun_command=\/etc\/puppet\/etckeeper-commit-post/a server = puppet-master.eu-west-1.compute.internal' /etc/puppet/puppet.conf
+  else
+  sudo sed -i "/postrun_command=\/etc\/puppet\/etckeeper-commit-post/a server = $PUBLIC_IP" /etc/puppet/puppet.conf
 fi
 
 
@@ -81,9 +81,9 @@ sudo puppet agent --no-daemonize --onetime --verbose >> /myLogs-$1.txt
 sudo puppet agent --enable >> /myLogs-$1.txt
 if [ -z "$3" ]
   then
-  sudo puppet agent --server $PUBLIC_IP >> /myLogs-$1.txt
-  else
   sudo puppet agent --server puppet-master.eu-west-1.compute.internal >> /myLogs-$1.txt
+  else
+  sudo puppet agent --server $PUBLIC_IP >> /myLogs-$1.txt
 fi
 
 
